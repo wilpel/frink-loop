@@ -17,7 +17,7 @@ import { FrinkAgent } from "./agent.js";
 // Tools & Session
 import { getOrCreateSession, resetSession } from "./tools/claude-session.js";
 import { setSessionConfig } from "./tools/reset-session.js";
-import { resetTodoState } from "./state/todo-state.js";
+import { resetTodoState, setTodos, getTodoSummary } from "./state/todo-state.js";
 import { resetTodoRenderer } from "./ui/todo-renderer.js";
 
 // CLI
@@ -52,6 +52,32 @@ ${workingDir}
 
 Remember: Tasks are for YOU to track progress. Use send_to_claude to do the actual coding work.
 Start by creating your plan, then begin working through it.
+`;
+}
+
+function buildTaskPromptWithPredefinedTasks(task: string, workingDir: string, tasks: string[]): string {
+  const taskList = tasks.map((t, i) => `${i + 1}. ${t}`).join("\n");
+  return `
+## Task
+${task}
+
+## Working Directory
+${workingDir}
+
+## Pre-defined Tasks (already in your todo list)
+${taskList}
+
+## Instructions
+Your task list has been pre-populated. You do NOT need to plan - start working immediately.
+
+1. Work through each task in order by using send_to_claude to have Claude Code do the actual work
+2. Mark each task in_progress before starting, then completed when done
+3. Verify results using git_status and read_file
+4. If you discover additional work needed, add new tasks to your list
+5. Reset Claude session if Claude gets stuck
+6. Call mark_task_complete ONLY when ALL tasks are completed
+
+Start working on the first task now.
 `;
 }
 
@@ -171,7 +197,22 @@ async function main() {
   }
 
   // Build the task prompt
-  const fullPrompt = buildTaskPrompt(task, workingDir);
+  let fullPrompt: string;
+
+  // Check if we have pre-defined tasks from a JSON file
+  if (args.taskDefinition && args.taskDefinition.tasks.length > 0) {
+    // Pre-populate the todo list
+    const todoInputs = args.taskDefinition.tasks.map(t => ({
+      task: t,
+      status: "pending" as const,
+    }));
+    setTodos(todoInputs);
+
+    console.log(c.muted(`    [*] Loaded ${args.taskDefinition.tasks.length} pre-defined tasks`));
+    fullPrompt = buildTaskPromptWithPredefinedTasks(task, workingDir, args.taskDefinition.tasks);
+  } else {
+    fullPrompt = buildTaskPrompt(task, workingDir);
+  }
 
   console.log(c.primary("\n    [*] Starting Frink Loop"));
   console.log(c.muted("        (ctrl+c to interrupt)\n"));
@@ -198,11 +239,11 @@ async function main() {
       }
     }
 
-    // Show result
-    const success = finalOutput.toLowerCase().includes("complete") ||
-                    finalOutput.toLowerCase().includes("success");
+    // Show result based on actual task completion
+    const todoSummary = getTodoSummary();
+    const success = todoSummary.total > 0 && todoSummary.completed === todoSummary.total;
 
-    showResult(success, finalOutput.substring(0, 200), claudeSession.getCallCount());
+    showResult(success, `${todoSummary.completed}/${todoSummary.total} tasks completed`, claudeSession.getCallCount());
 
   } catch (error) {
     console.log(c.muted("\n    [!!] Error occurred:"));

@@ -9,9 +9,15 @@ import { colors } from "../ui/theme.js";
 // Types
 // =============================================================================
 
+export interface TaskDefinition {
+  prompt: string;
+  tasks: string[];
+}
+
 export interface ParsedArgs {
   task?: string;
   taskFile?: string;
+  taskDefinition?: TaskDefinition;
   workingDir?: string;
   prompt?: string;
   interactive: boolean;
@@ -75,9 +81,29 @@ export function parseArgs(argv: string[] = process.argv.slice(2)): ParsedArgs {
   }
 
   // If task file provided, read task from file
+  let taskDefinition: TaskDefinition | undefined;
+
   if (taskFile) {
     try {
-      task = fs.readFileSync(taskFile, "utf-8").trim();
+      const content = fs.readFileSync(taskFile, "utf-8").trim();
+
+      // Check if it's a JSON file with structured tasks
+      if (taskFile.endsWith(".json")) {
+        const parsed = JSON.parse(content);
+        if (parsed.prompt && Array.isArray(parsed.tasks)) {
+          taskDefinition = {
+            prompt: parsed.prompt,
+            tasks: parsed.tasks,
+          };
+          task = parsed.prompt;
+        } else {
+          // Plain JSON with just a task string
+          task = content;
+        }
+      } else {
+        // Plain text file
+        task = content;
+      }
     } catch (error) {
       console.error(`Error reading task file: ${taskFile}`);
       process.exit(1);
@@ -90,6 +116,7 @@ export function parseArgs(argv: string[] = process.argv.slice(2)): ParsedArgs {
   return {
     task,
     taskFile,
+    taskDefinition,
     workingDir,
     prompt,
     interactive,
@@ -128,7 +155,14 @@ ${colors.primary("Options:")}
 ${colors.primary("Examples:")}
   ${colors.muted('frink "Add user authentication"')}
   ${colors.muted('frink -f ./TASK.md -d ./backend')}
-  ${colors.muted('frink "Fix TypeScript errors" -d ./backend')}
+  ${colors.muted('frink -f ./tasks.json')}              ${colors.muted("# Pre-defined tasks")}
   ${colors.muted("frink setup")}
+
+${colors.primary("Task File Formats:")}
+  ${colors.muted("Plain text (.md, .txt):")}
+    Just the task description
+
+  ${colors.muted("JSON with pre-defined tasks (.json):")}
+    ${colors.muted('{ "prompt": "Build feature X", "tasks": ["Step 1", "Step 2"] }')}
 `);
 }
