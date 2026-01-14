@@ -1,0 +1,44 @@
+{
+  "name": "frink-loop",
+  "version": "2.0.0",
+  "description": "Smart autonomous loop using Strands Agents SDK to control Claude Code - supports OpenAI and Anthropic",
+  "main": "dist/index.js",
+  "bin": {
+    "frink": "./dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts"
+  },
+  "keywords": [
+    "openai",
+    "anthropic",
+    "claude",
+    "autonomous",
+    "agent",
+    "strands"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@strands-agents/sdk": "^0.1.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.6.2",
+    "cli-table3": "^0.6.5",
+    "figlet": "^1.9.4",
+    "inquirer": "^13.2.0",
+    "openai": "^6.0.0",
+    "ora": "^9.0.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/figlet": "^1.7.0",
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^25.0.8",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
