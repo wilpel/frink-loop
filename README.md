@@ -14,6 +14,10 @@
   Inspired by <a href="https://github.com/frankbria/ralph-claude-code">Ralph Loop</a>
 </p>
 
+<p align="center">
+  <img src="images/code.png" alt="Frink Loop in action" width="700">
+</p>
+
 ---
 
 ## Features
