@@ -1,5 +1,5 @@
 // Frink Agent - The intelligent orchestrator
-// Supports both OpenAI (via Strands) and Anthropic
+// Supports both OpenAI (via Strands SDK) and Anthropic (native SDK)
 
 import { createProvider, getApiKey, type ModelProvider, type ModelConfig, type ToolDefinition, type StreamEvent } from "./providers/index.js";
 import { loadConfig, loadPrompt, type FrinkConfig } from "./config/index.js";

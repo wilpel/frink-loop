@@ -87,14 +87,17 @@ Configuration is stored in the `.frink/` directory in your current working direc
 # First run triggers setup if not configured
 frink
 
-# Run with a task
+# Run with a task string
 frink "Add dark mode to the settings page"
+
+# Run with task from file
+frink -f ./task.md
+
+# Run with pre-defined tasks (JSON)
+frink -f ./tasks.json
 
 # Specify working directory
 frink "Fix TypeScript errors" --dir ./backend
-
-# Use a custom prompt file
-frink "Implement feature" --prompt ./PROMPT.md
 
 # Enable debug output
 frink "Debug this issue" --debug
@@ -200,10 +203,49 @@ frink --debug                      # Enable debug output
 
 | Option | Short | Description |
 |--------|-------|-------------|
+| `--file <path>` | `-f` | Read task from file (text or JSON) |
 | `--dir <path>` | `-d` | Working directory for Claude Code |
-| `--prompt <file>` | `-p` | Custom prompt file path |
+| `--prompt <file>` | `-p` | Custom system prompt file |
 | `--debug` | — | Enable verbose debug output |
 | `--help` | `-h` | Show help message |
+
+---
+
+## Task Files
+
+You can provide tasks via file instead of command line string.
+
+### Plain Text File
+
+Any `.md` or `.txt` file with the task description:
+
+```markdown
+Add user authentication with JWT tokens.
+Include login, logout, and token refresh endpoints.
+Write tests for all new endpoints.
+```
+
+### Structured JSON File
+
+Use a `.json` file to provide pre-defined tasks that skip the planning phase:
+
+```json
+{
+  "prompt": "Add user authentication with JWT",
+  "tasks": [
+    "Create auth middleware for JWT verification",
+    "Add POST /login endpoint",
+    "Add POST /logout endpoint",
+    "Add POST /refresh endpoint",
+    "Write tests for auth endpoints"
+  ]
+}
+```
+
+When using structured JSON:
+- Tasks are pre-loaded into the todo list
+- Agent starts working immediately without planning
+- Agent can still add tasks if it discovers more work needed
 
 ---
 
