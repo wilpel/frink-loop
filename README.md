@@ -396,7 +396,7 @@ This shows:
 | Aspect | Ralph Loop | Frink Loop |
 |--------|------------|------------|
 | Language | Bash | TypeScript |
-| Session | Fresh every call | Persistent with `--resume` |
+| Session | Fresh every call | Persistent with `--resume`, agent can reset when needed |
 | Context | Lost between calls | Preserved, reset when needed |
 | Orchestration | Bash script | AI agent (OpenAI/Anthropic) |
 | Task Tracking | None | Dynamic todo list |
