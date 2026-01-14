@@ -1,10 +1,18 @@
-# Frink Loop
+<p align="center">
+  <img src="frink-logo.png" alt="Frink Loop" width="400">
+</p>
 
-**Smart autonomous coding loop that orchestrates Claude Code using OpenAI or Anthropic as the reasoning agent.**
+<p align="center">
+  <strong>Smart autonomous coding loop that orchestrates Claude Code using OpenAI or Anthropic as the reasoning agent.</strong>
+</p>
 
-Frink Loop takes your task, breaks it into subtasks, and executes them through Claude Code with persistent sessions and dynamic task management. The orchestrating AI decides when to continue, reset context, or adapt its approach.
+<p align="center">
+  Frink Loop takes your task, breaks it into subtasks, and executes them through Claude Code with persistent sessions and dynamic task management. The orchestrating AI decides when to continue, reset context, or adapt its approach.
+</p>
 
-Inspired by [Ralph Loop](https://github.com/frankbria/ralph-claude-code).
+<p align="center">
+  Inspired by <a href="https://github.com/frankbria/ralph-claude-code">Ralph Loop</a>
+</p>
 
 ---
 
@@ -96,41 +104,9 @@ frink "Debug this issue" --debug
 
 ## How It Works
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         YOUR TASK                           │
-│            "Add authentication to the API"                  │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   ORCHESTRATING AGENT                       │
-│            (OpenAI via Strands / Anthropic)                 │
-│                                                             │
-│  1. Analyze task → break into subtasks                      │
-│  2. Create todo list                                        │
-│  3. For each subtask:                                       │
-│     • Mark in_progress                                      │
-│     • Send to Claude Code                                   │
-│     • Verify result                                         │
-│     • Mark completed                                        │
-│  4. Adapt: add tasks, reset session if stuck                │
-│                                                             │
-│  Tools: send_to_claude, todo_*, git_status, read_file,      │
-│         mark_complete, reset_session, [custom tools]        │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│               CLAUDE CODE (Persistent Session)              │
-│                                                             │
-│  • First call: claude --session-id <uuid> "prompt"          │
-│  • Subsequent: claude --resume <uuid> "prompt"              │
-│  • YOLO mode: auto-accepts all actions                      │
-│                                                             │
-│  Agent can reset session when Claude seems stuck            │
-└─────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="images/diagram.png" alt="Frink Loop Architecture" width="700">
+</p>
 
 ### Execution Flow
 

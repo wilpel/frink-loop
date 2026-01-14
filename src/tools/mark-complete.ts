@@ -2,7 +2,7 @@
 // Signal task completion
 
 import { z } from "zod";
-import { confirm, input } from "@inquirer/prompts";
+import { input } from "@inquirer/prompts";
 import { defineTool } from "./tool-helper.js";
 import { c, colors } from "../ui/theme.js";
 import { getTodoSummary, getTodos } from "../state/todo-state.js";
@@ -58,24 +58,21 @@ Include a summary of what was accomplished.`,
     console.log();
 
     try {
-      const userConfirmed = await confirm({
-        message: colors.primary("Is everything done? Confirm to finish:"),
-        default: true,
+      // Single input: press Enter to confirm, or type feedback for more work
+      const userInput = await input({
+        message: colors.primary("Done? Press Enter to confirm, or type what else is needed:"),
       });
 
-      if (!userConfirmed) {
-        // Ask user what's wrong or what else needs to be done
-        const feedback = await input({
-          message: colors.primary("What else needs to be done?"),
-        });
+      const trimmed = userInput.trim().toLowerCase();
+      const isConfirmed = trimmed === "" || trimmed === "yes" || trimmed === "y";
 
+      if (!isConfirmed) {
         console.log(c.muted("\n  User requested more work.\n"));
 
         return {
           complete: false,
           success: false,
-          error: "User indicated more work is needed.",
-          userFeedback: feedback || "User did not specify, ask what they need.",
+          userFeedback: userInput,
           todoSummary: {
             total: todoSummary.total,
             completed: todoSummary.completed,
