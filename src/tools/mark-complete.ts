@@ -2,7 +2,7 @@
 // Signal task completion
 
 import { z } from "zod";
-import { confirm } from "@inquirer/prompts";
+import { confirm, input } from "@inquirer/prompts";
 import { defineTool } from "./tool-helper.js";
 import { c, colors } from "../ui/theme.js";
 import { getTodoSummary, getTodos } from "../state/todo-state.js";
@@ -64,11 +64,18 @@ Include a summary of what was accomplished.`,
       });
 
       if (!userConfirmed) {
-        console.log(c.muted("\n  User requested more work. Continue with additional tasks.\n"));
+        // Ask user what's wrong or what else needs to be done
+        const feedback = await input({
+          message: colors.primary("What else needs to be done?"),
+        });
+
+        console.log(c.muted("\n  User requested more work.\n"));
+
         return {
           complete: false,
           success: false,
-          error: "User indicated more work is needed. Ask what else needs to be done.",
+          error: "User indicated more work is needed.",
+          userFeedback: feedback || "User did not specify, ask what they need.",
           todoSummary: {
             total: todoSummary.total,
             completed: todoSummary.completed,
