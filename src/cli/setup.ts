@@ -13,7 +13,7 @@ import { AVAILABLE_MODELS } from "../providers/index.js";
 // =============================================================================
 
 export interface SetupConfig {
-  provider: "openai" | "anthropic";
+  provider: "openai" | "anthropic" | "zai";
   model: string;
   apiKey: string;
 }
@@ -52,6 +52,7 @@ export async function runSetup(force: boolean = false): Promise<SetupConfig | nu
       choices: [
         { name: "OpenAI (GPT-5, o3)", value: "openai" as const },
         { name: "Anthropic (Claude)", value: "anthropic" as const },
+        { name: "Z.AI (GLM Coding Plan)", value: "zai" as const },
       ],
     });
 
@@ -64,7 +65,12 @@ export async function runSetup(force: boolean = false): Promise<SetupConfig | nu
     });
 
     // Step 3: Get API key
-    const keyLabel = provider === "openai" ? "OpenAI" : "Anthropic";
+    const keyLabelMap = {
+      openai: "OpenAI",
+      anthropic: "Anthropic",
+      zai: "Z.AI",
+    };
+    const keyLabel = keyLabelMap[provider];
     const apiKey = await password({
       message: colors.primary(`[3] Enter ${keyLabel} API key:`),
       mask: "*",
@@ -87,8 +93,10 @@ export async function runSetup(force: boolean = false): Promise<SetupConfig | nu
     // Set env var for current session
     if (provider === "openai") {
       process.env.OPENAI_API_KEY = apiKey;
-    } else {
+    } else if (provider === "anthropic") {
       process.env.ANTHROPIC_API_KEY = apiKey;
+    } else {
+      process.env.ZAI_API_KEY = apiKey;
     }
 
     return { provider, model, apiKey };

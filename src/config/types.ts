@@ -22,7 +22,7 @@ export interface CustomToolConfig {
 // Frink Configuration
 // =============================================================================
 
-export type Provider = "openai" | "anthropic";
+export type Provider = "openai" | "anthropic" | "zai";
 
 export interface FrinkConfig {
   provider: Provider;
@@ -39,6 +39,7 @@ export interface FrinkConfig {
 export interface EnvironmentConfig {
   openaiApiKey?: string;
   anthropicApiKey?: string;
+  zaiApiKey?: string;
   debug: boolean;
   maxIterations?: number;
   workingDirectory?: string;

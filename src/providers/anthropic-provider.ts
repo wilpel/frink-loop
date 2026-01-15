@@ -90,6 +90,7 @@ export class AnthropicProvider implements ModelProvider {
     this.config = config;
     this.client = new Anthropic({
       apiKey: config.apiKey,
+      baseURL: config.baseUrl,
     });
   }
 

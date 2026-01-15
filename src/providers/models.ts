@@ -36,9 +36,14 @@ export const ANTHROPIC_MODELS: ModelInfo[] = [
   { id: "claude-opus-4-20250514", name: "Claude Opus 4" },
 ];
 
+export const ZAI_MODELS: ModelInfo[] = [
+  { id: "glm-4.7", name: "GLM-4.7 (recommended)" },
+];
+
 export const AVAILABLE_MODELS = {
   openai: OPENAI_MODELS,
   anthropic: ANTHROPIC_MODELS,
+  zai: ZAI_MODELS,
 };
 
 // =============================================================================
@@ -61,13 +66,13 @@ export function isReasoningModel(model: string): boolean {
 /**
  * Get default model for provider
  */
-export function getDefaultModel(provider: "openai" | "anthropic"): string {
+export function getDefaultModel(provider: "openai" | "anthropic" | "zai"): string {
   return AVAILABLE_MODELS[provider][0].id;
 }
 
 /**
  * Get models for a provider
  */
-export function getModelsForProvider(provider: "openai" | "anthropic"): ModelInfo[] {
+export function getModelsForProvider(provider: "openai" | "anthropic" | "zai"): ModelInfo[] {
   return AVAILABLE_MODELS[provider];
 }

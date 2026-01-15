@@ -116,6 +116,7 @@ export function getEnvironmentConfig(): EnvironmentConfig {
   return {
     openaiApiKey: process.env.OPENAI_API_KEY,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    zaiApiKey: process.env.ZAI_API_KEY,
     debug: process.env.DEBUG === "1" || process.env.DEBUG === "true",
     maxIterations: process.env.MAX_ITERATIONS ? parseInt(process.env.MAX_ITERATIONS, 10) : undefined,
     workingDirectory: process.env.WORKING_DIRECTORY,
@@ -123,7 +124,7 @@ export function getEnvironmentConfig(): EnvironmentConfig {
 }
 
 export function hasApiKey(): boolean {
-  return !!(process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY);
+  return !!(process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY || process.env.ZAI_API_KEY);
 }
 
 // =============================================================================
@@ -192,7 +193,12 @@ export function saveConfig(options: SaveConfigOptions): string {
 
   // Save API key to .env
   const envPath = path.join(frinkDir, ".env");
-  const envKey = options.provider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY";
+  const envKeyMap = {
+    openai: "OPENAI_API_KEY",
+    anthropic: "ANTHROPIC_API_KEY",
+    zai: "ZAI_API_KEY",
+  };
+  const envKey = envKeyMap[options.provider];
   fs.writeFileSync(envPath, `# Frink Loop API Key\n${envKey}=${options.apiKey}\n`);
 
   // Save config.json
