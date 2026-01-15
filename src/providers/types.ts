@@ -99,9 +99,14 @@ export interface OpenAIConfig extends ProviderConfig {
 
 export interface AnthropicConfig extends ProviderConfig {
   provider: "anthropic";
+  baseUrl?: string;
 }
 
-export type ModelConfig = OpenAIConfig | AnthropicConfig;
+export interface ZaiConfig extends ProviderConfig {
+  provider: "zai";
+}
+
+export type ModelConfig = OpenAIConfig | AnthropicConfig | ZaiConfig;
 
 // =============================================================================
 // Agent Result
